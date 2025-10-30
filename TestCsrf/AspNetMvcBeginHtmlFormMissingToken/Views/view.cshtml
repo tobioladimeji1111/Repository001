@@ -1,0 +1,6 @@
+<html>
+    @using (Html.BeginForm("Something", "Something", new {jobId = @Model.JobId.ToString("N")}, FormMethod.Post))
+    {
+        <button type="submit">Abandon Ship</button>
+    }
+</html>

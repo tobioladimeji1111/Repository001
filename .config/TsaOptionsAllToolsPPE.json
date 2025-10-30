@@ -1,0 +1,16 @@
+{
+    "codebaseName": "SecureApp_Main_Test",
+    "instanceUrl": "https://msazure.visualstudio.com/defaultcollection/",
+    "projectName": "One",
+    "areaPath": "One\\Security\\Security Integration",
+    "iterationPath": "",
+    "allTools": true,
+    "ppe": true,
+    "notificationAliases": [
+        "SecIntDev@microsoft.com"
+    ],
+    "codebaseAdmins": [
+        "redmond\\secintsa",
+        "redmond\\SecIntDev"
+    ]
+}

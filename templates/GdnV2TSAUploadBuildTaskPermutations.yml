@@ -1,0 +1,64 @@
+parameters:
+- name: IncludeHigherPriorityTestSuites
+  default: $(IncludeHigherPriorityTestSuites)
+- name: TestSuite
+  default: $(TestSuite)
+
+steps:
+- powershell: |
+   # These should have been set by the variables in a pipeline
+   
+   Write-Host "TestSuite = $(TestSuite)"
+   Write-Host "IncludeHigherPriorityTestSuites = $(IncludeHigherPriorityTestSuites)"
+   
+  displayName: 'Display Parameter Values'
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-uploadtotsa.TSAUpload@2
+  displayName: '(P0) TSA Upload: Onboard Codebase and Upload Logs for All Tools'
+  inputs:
+    GdnPublishTsaOnboard: true
+    GdnPublishTsaConfigFile: '$(Build.SourcesDirectory)\.config\TsaOptionsAllTools.json'
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P0'), eq(variables['IncludeHigherPriorityTestSuites'], 'true')))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-uploadtotsa.TSAUpload@2
+  displayName: '(P1) TSA Upload: Onboard Codebase and Upload Logs for Selected Tools'
+  inputs:
+    GdnPublishTsaOnboard: true
+    GdnPublishTsaConfigFile: '$(Build.SourcesDirectory)\.config\TsaOptionsListedTools.json'
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P1'), and(eq(variables['TestSuite'], 'P2'), eq(variables['IncludeHigherPriorityTestSuites'], 'true'))))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-uploadtotsa.TSAUpload@2
+  displayName: '(P1) TSA Upload: Selected Tools (Do Not Onboard Codebase, Make Exported Results Publishable)'
+  inputs:
+    GdnPublishTsaOnboard: false
+    GdnPublishTsaConfigFile: '$(Build.SourcesDirectory)\.config\TsaOptionsListedTools.json'
+    GdnPublishTsaExportedResultsPublishable: true
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P1'), and(eq(variables['TestSuite'], 'P2'), eq(variables['IncludeHigherPriorityTestSuites'], 'true'))))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-uploadtotsa.TSAUpload@2
+  displayName: '(P2) TSA Upload: Selected Tools (Do Not Onboard Codebase)'
+  inputs:
+    GdnPublishTsaOnboard: false
+    GdnPublishTsaConfigFile: '$(Build.SourcesDirectory)\.config\TsaOptionsListedTools.json'
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-uploadtotsa.TSAUpload@2
+  displayName: '(P2) TSA Upload: All Tools (Do Not Onboard Codebase)'
+  inputs:
+    GdnPublishTsaOnboard: false
+    GdnPublishTsaConfigFile: '$(Build.SourcesDirectory)\.config\TsaOptionsAllTools.json'
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-uploadtotsa.TSAUpload@2
+  displayName: '(P2) TSA Upload: All Tools (Onboard Codebase, Make Exported Results Publishable)'
+  inputs:
+    GdnPublishTsaOnboard: true
+    GdnPublishTsaConfigFile: '$(Build.SourcesDirectory)\.config\TsaOptionsAllTools.json'
+    GdnPublishTsaExportedResultsPublishable: true
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))

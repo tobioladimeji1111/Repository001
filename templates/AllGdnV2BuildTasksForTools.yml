@@ -1,0 +1,98 @@
+parameters:
+- name: IncludeHigherPriorityTestSuites
+  default: $(IncludeHigherPriorityTestSuites)
+- name: Principal
+  default: $(principal)
+- name: TestSuite
+  default: $(TestSuite)
+
+steps:
+- powershell: |
+   # These should have been set by the variables in a pipeline
+   
+   Write-Host "TestSuite = $(TestSuite)"
+   Write-Host "IncludeHigherPriorityTestSuites = $(IncludeHigherPriorityTestSuites)"
+   Write-Host "Principal = $(Principal)"
+   
+  displayName: 'Display Parameter Values'
+
+- template: /templates/GdnV2APIScanBuildTaskPermutations.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    Principal: $(Principal)
+    TestSuite: $(TestSuite)
+
+- template: /templates/GdnV2AntiMalwareBuildTaskPermutations.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    TestSuite: $(TestSuite)
+
+- template: /templates/GdnV2ARMoryBuildTaskPermutations.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    TestSuite: $(TestSuite)
+
+- template: /templates/GdnV2BanditBuildTaskPermutations.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    TestSuite: $(TestSuite)
+
+- template: /templates/GdnV2BinSkimBuildTaskPermutations.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    TestSuite: $(TestSuite)
+
+- template: /templates/GdnV2CodeInspectorBuildTaskPermutations.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    TestSuite: $(TestSuite)
+
+- template: /templates/GdnV2CodeQLBuildTaskPermutations.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    TestSuite: $(TestSuite)
+
+- template: /templates/GdnV2CodesignValidationBuildTaskPermutations.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    TestSuite: $(TestSuite)
+
+- template: /templates/GdnV2CredScanBuildTaskPermutations.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    TestSuite: $(TestSuite)
+
+- template: /templates/GdnV2CSRFBuildTaskPermutations.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    TestSuite: $(TestSuite)
+
+- template: /templates/GdnV2ESLintBuildTaskPermutations.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    TestSuite: $(TestSuite)
+
+- template: /templates/GdnV2FlawfinderBuildTaskPermutations.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    TestSuite: $(TestSuite)
+
+- template: /templates/GdnV2PoliCheckBuildTaskPermutations.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    TestSuite: $(TestSuite)
+
+- template: /templates/GdnV2PREfastBuildTaskPermutations.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    TestSuite: $(TestSuite)
+
+- template: /templates/GdnV2RoslynAnalyzersBuildTaskPermutations.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    TestSuite: $(TestSuite)
+
+- template: /templates/GdnV2SpotBugsBuildTaskPermutations.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    TestSuite: $(TestSuite)

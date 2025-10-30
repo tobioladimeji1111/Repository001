@@ -1,0 +1,168 @@
+{
+  "version": "1.0.0",
+  "suppressionSets": {
+    "default": {
+      "name": "default",
+      "createdDate": "2020-08-25 21:30:26Z",
+      "lastUpdatedDate": "2021-04-06 19:07:13Z"
+    }
+  },
+  "results": {
+    "4ae0dfb51208083ac31a53f6e30e066b9371bed05c8c36321e00212b79be8164": {
+      "signature": "4ae0dfb51208083ac31a53f6e30e066b9371bed05c8c36321e00212b79be8164",
+      "target": "CustomSearchers.Old.xml",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "credscan",
+      "ruleId": "CSCAN-MSFT0090",
+      "justification": null,
+      "createdDate": "2020-08-25 21:30:26Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "30834fd85fa16331ba154d0a232d814d07952f9206d7024c3d2ebbfb962b84ff": {
+      "signature": "30834fd85fa16331ba154d0a232d814d07952f9206d7024c3d2ebbfb962b84ff",
+      "target": "CustomSearchers.xml",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "credscan",
+      "ruleId": "CSCAN-MSFT0090",
+      "justification": null,
+      "createdDate": "2020-08-25 21:30:26Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "6a855f0f571f24e5e9824b25cfe8d745e4f32007187ea1c8fc8be51a8c49cef2": {
+      "signature": "6a855f0f571f24e5e9824b25cfe8d745e4f32007187ea1c8fc8be51a8c49cef2",
+      "target": "SecureApp/Program.cs",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "credscan",
+      "ruleId": "CSCAN-AZURE0070",
+      "justification": null,
+      "createdDate": "2020-08-25 21:29:36Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "205f6361a63ca0c0734f0b32b1dcf9067f019d08f60cd3dae6d15ed8e95df89c": {
+      "signature": "205f6361a63ca0c0734f0b32b1dcf9067f019d08f60cd3dae6d15ed8e95df89c",
+      "target": "SecureApp/Armory/azuredeploy.json",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "ARMory",
+      "ruleId": "ARM1005",
+      "justification": null,
+      "createdDate": "2020-08-25 21:30:26Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "c9efc80e094ff958f7858a0bdea3b2a25de0910bca92d8a95cc1c5a7139ce33d": {
+      "signature": "c9efc80e094ff958f7858a0bdea3b2a25de0910bca92d8a95cc1c5a7139ce33d",
+      "target": "SecureApp/Armory/azuredeploy.json",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "ARMory",
+      "ruleId": "ARM1001",
+      "justification": null,
+      "createdDate": "2020-08-25 21:30:26Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "ae530d0da6de1e112d9e6177c0de21e518b697c64fd3cb49d9786fcb7771e302": {
+      "signature": "ae530d0da6de1e112d9e6177c0de21e518b697c64fd3cb49d9786fcb7771e302",
+      "target": "SecureApp/Armory/azuredeploy.json",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "ARMory",
+      "ruleId": "ARM1010",
+      "justification": null,
+      "createdDate": "2020-08-25 21:30:26Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "247c3dca4e668b6389c95102ee92bf69fbb9a89a107a018bd7a3a16b44119e35": {
+      "signature": "247c3dca4e668b6389c95102ee92bf69fbb9a89a107a018bd7a3a16b44119e35",
+      "target": "SecureApp/binaries/vulnprocess.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "BinSkim",
+      "ruleId": "BA2006",
+      "justification": null,
+      "createdDate": "2020-08-25 21:29:36Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "8fed73e06340d15fa4fffbc702c43ace989fe1c55b8380164b64492cc4d9469d": {
+      "signature": "8fed73e06340d15fa4fffbc702c43ace989fe1c55b8380164b64492cc4d9469d",
+      "target": "SecureApp/binaries/vulnprocess.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "BinSkim",
+      "ruleId": "BA2018",
+      "justification": null,
+      "createdDate": "2020-08-25 21:29:36Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "4983ce4ab441e891457059670ae1f71c8465af9b2cf217ecad478340c5d36e3e": {
+      "signature": "4983ce4ab441e891457059670ae1f71c8465af9b2cf217ecad478340c5d36e3e",
+      "target": "SecureApp/binaries/vulnprocess.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "BinSkim",
+      "ruleId": "BA2019",
+      "justification": null,
+      "createdDate": "2020-08-25 21:29:36Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "cd138f986c9e3d496ac31702614942df107d4075d52b670004cb31cc9dea0b25": {
+      "signature": "cd138f986c9e3d496ac31702614942df107d4075d52b670004cb31cc9dea0b25",
+      "target": "SecureApp/binaries/vulnprocess.exe",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "BinSkim",
+      "ruleId": "BA2021",
+      "justification": null,
+      "createdDate": "2020-08-25 21:29:36Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "5504e8afa60f860363f4493f70df0ee4dce0cb77629281d46acf69627e541182": {
+      "signature": "5504e8afa60f860363f4493f70df0ee4dce0cb77629281d46acf69627e541182",
+      "target": "SecureApp/powershell/unsecure-module.psm1",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "Code Signing Validator",
+      "ruleId": "CodeSign.MissingSigningCert",
+      "justification": null,
+      "createdDate": "2021-04-06 19:06:42Z",
+      "expirationDate": null,
+      "type": null
+    },
+    "7dc2968a80c732abf2c2e613752e6012aee8a79cf44d46863fd72106bff58077": {
+      "signature": "7dc2968a80c732abf2c2e613752e6012aee8a79cf44d46863fd72106bff58077",
+      "target": "SecureApp/powershell/unsecure-script.ps1",
+      "memberOf": [
+        "default"
+      ],
+      "tool": "Code Signing Validator",
+      "ruleId": "CodeSign.MissingSigningCert",
+      "justification": null,
+      "createdDate": "2021-04-06 19:07:13Z",
+      "expirationDate": null,
+      "type": null
+    }
+  }
+}

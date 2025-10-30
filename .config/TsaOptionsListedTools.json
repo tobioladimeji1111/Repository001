@@ -1,0 +1,20 @@
+{
+    "codebaseName": "SecureApp_Main_Test",
+    "instanceUrl": "https://msazure.visualstudio.com/defaultcollection/",
+    "template": "TFSMSAzure",
+    "projectName": "One",
+    "areaPath": "One\\Security\\Security Integration",
+    "iterationPath": "",
+    "tools": [
+        "BinSkim",
+        "CredScan",
+        "RoslynAnalyzers"
+    ],
+    "notificationAliases": [
+        "SecIntDev@microsoft.com"
+    ],
+    "codebaseAdmins": [
+        "redmond\\secintsa",
+        "redmond\\SecIntDev"
+    ]
+}

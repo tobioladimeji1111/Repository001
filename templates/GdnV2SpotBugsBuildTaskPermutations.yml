@@ -1,0 +1,23 @@
+parameters:
+- name: IncludeHigherPriorityTestSuites
+  default: $(IncludeHigherPriorityTestSuites)
+- name: TestSuite
+  default: $(TestSuite)
+
+steps:
+- powershell: |
+   # These should have been set by the variables in a pipeline
+   
+   Write-Host "TestSuite = $(TestSuite)"
+   Write-Host "IncludeHigherPriorityTestSuites = $(IncludeHigherPriorityTestSuites)"
+   
+  displayName: 'Display Parameter Values'
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-spotbugs.SpotBugs@1
+  displayName: '(P0) Run SpotBugs: Defaults'
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P0'), eq(variables['IncludeHigherPriorityTestSuites'], 'true')))
+
+#
+# More permutations / variations to be added here
+#

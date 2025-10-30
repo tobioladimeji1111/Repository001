@@ -1,0 +1,43 @@
+parameters:
+- name: BuildConfiguration
+  default: $(BuildConfiguration)
+- name: BuildPlatform
+  default: $(BuildPlatform)
+
+steps:
+- powershell: |
+   # These should have been set by the variables in a pipeline
+   
+   Write-Host "BuildConfiguration = $(BuildConfiguration)"
+   Write-Host "BuildPlatform = $(BuildPlatform)"
+   
+  displayName: 'Display Parameter Values'
+
+- task: NuGetCommand@2
+  displayName: 'NuGet restore **/*.sln'
+
+- task: VSBuild@1
+  displayName: 'Build solution **\*.sln'
+  inputs:
+    platform: '$(BuildPlatform)'
+    configuration: '$(BuildConfiguration)'
+    clean: true
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet restore'
+  inputs:
+    command: restore
+    projects: TestNetCore.sln
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+  inputs:
+    projects: TestNetCore.sln
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.StagingDirectory)'
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: '**\bin\$(BuildConfiguration)\**'
+    TargetFolder: '$(Build.StagingDirectory)'
+    

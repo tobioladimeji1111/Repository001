@@ -1,0 +1,44 @@
+parameters:
+- name: BuildConfiguration
+  default: $(BuildConfiguration)
+- name: BuildPlatform
+  default: $(BuildPlatform)
+- name: IncludeHigherPriorityTestSuites
+  default: $(IncludeHigherPriorityTestSuites)
+- name: Principal
+  default: $(principal)
+- name: TestSuite
+  default: $(TestSuite)
+
+steps:
+- powershell: |
+   # These should have been set by the variables in a pipeline
+   
+   Write-Host "BuildConfiguration = $(BuildConfiguration)"
+   Write-Host "BuildPlatform = $(BuildPlatform)"
+   Write-Host "TestSuite = $(TestSuite)"
+   Write-Host "IncludeHigherPriorityTestSuites = $(IncludeHigherPriorityTestSuites)"
+   Write-Host "Principal = $(Principal)"
+   
+  displayName: 'Display Parameter Values'
+
+- template: /templates/BuildSetup.yml
+  parameters:
+    BuildConfiguration: $(BuildConfiguration)
+    BuildPlatform: $(BuildPlatform)
+
+- template: /templates/GdnV1BuildTasksForTools.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    TestSuite: $(TestSuite)
+
+- template: /templates/AllGdnV2BuildTasksForTools.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    Principal: $(principal)
+    TestSuite: $(TestSuite)
+
+- template: /templates/AllGdnV2BuildTasksForPostProcessing.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    TestSuite: $(TestSuite)

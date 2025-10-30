@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="SDL 7.0 Recommended Plugin Native Rules" Description="This ruleset contains all the security checks that ship with the SDL 7.0 that are recommended for SDL 7.0. You need to install the native rules for SDL from codebox before using this ruleset. This is a subset of all the rules that are recommended for SDL 7.0. To get the complete set, use the Recommended-Ruleset." ToolsVersion="11.0">
+    <Rules AnalyzerId="Microsoft.Analyzers.NativeCodeAnalysis" RuleNamespace="Microsoft.Rules.Native">
+        <Rule Id="C26000" Action="Warning" />
+        <Rule Id="C26006" Action="Warning" />
+        <Rule Id="C26007" Action="Warning" />
+        <Rule Id="C26014" Action="Warning" />
+        <Rule Id="C26015" Action="Warning" />
+        <Rule Id="C26016" Action="Warning" />
+        <Rule Id="C26030" Action="Warning" />
+        <Rule Id="C26031" Action="Warning" />
+        <Rule Id="C26053" Action="Warning" />
+        <Rule Id="C33004" Action="Warning" />
+        <Rule Id="C33006" Action="Warning" />
+        <Rule Id="C33088" Action="Warning" />
+        <Rule Id="C33001" Action="Error" />
+        <Rule Id="C33005" Action="Error" />
+        <Rule Id="C33010" Action="Error" />
+        <Rule Id="C33020" Action="Error" />
+        <Rule Id="C33087" Action="Error" />
+        <Rule Id="C33089" Action="Error" />
+        <Rule Id="C33090" Action="Warning" />
+        <Rule Id="C33091" Action="Error" />
+        <Rule Id="C33092" Action="Error" />
+        <Rule Id="C33093" Action="Error" />
+        <Rule Id="C33095" Action="Error" />
+        <Rule Id="C33096" Action="Error" />
+        <Rule Id="C33097" Action="Error" />
+        <Rule Id="C33098" Action="Error" />
+        <Rule Id="C33099" Action="Error" />
+    </Rules>
+</RuleSet>

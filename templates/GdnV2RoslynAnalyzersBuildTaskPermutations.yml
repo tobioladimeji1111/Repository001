@@ -1,0 +1,197 @@
+parameters:
+- name: IncludeHigherPriorityTestSuites
+  default: $(IncludeHigherPriorityTestSuites)
+- name: TestSuite
+  default: $(TestSuite)
+
+steps:
+- powershell: |
+   # These should have been set by the variables in a pipeline
+   
+   Write-Host "TestSuite = $(TestSuite)"
+   Write-Host "IncludeHigherPriorityTestSuites = $(IncludeHigherPriorityTestSuites)"
+   
+  displayName: 'Display Parameter Values'
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-roslynanalyzers.RoslynAnalyzers@3
+  displayName: '(P0) Run Roslyn Analyzers: Defaults'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+  inputs:
+    userProvideBuildInfo: auto
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P0'), eq(variables['IncludeHigherPriorityTestSuites'], 'true')))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-roslynanalyzers.RoslynAnalyzers@3
+  displayName: '(P0) Run Roslyn Analyzers: SDL Required Ruleset'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+  inputs:
+    userProvideBuildInfo: auto
+    rulesetName: Required
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P0'), eq(variables['IncludeHigherPriorityTestSuites'], 'true')))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-roslynanalyzers.RoslynAnalyzers@3
+  displayName: '(P1) Run Roslyn Analyzers: User Provides Build Info (dotnet build for full path sln with quotes)'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+  inputs:
+    msBuildCommandline: '"C:\program files\dotnet\dotnet.exe" build "$(Build.SourcesDirectory)\TestNetCore.sln"'
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P1'), and(eq(variables['TestSuite'], 'P2'), eq(variables['IncludeHigherPriorityTestSuites'], 'true'))))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-roslynanalyzers.RoslynAnalyzers@3
+  displayName: '(P1) Run Roslyn Analyzers: User Provides Build Info (MSBuild for full path sln with quotes)'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+  inputs:
+    msBuildArchitecture: x86
+    msBuildCommandline: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\msbuild.exe" "$(Build.SourcesDirectory)\SecureApp.sln"'
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P1'), and(eq(variables['TestSuite'], 'P2'), eq(variables['IncludeHigherPriorityTestSuites'], 'true'))))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-roslynanalyzers.RoslynAnalyzers@3
+  displayName: '(P1) Run Roslyn Analyzers: Ruleset to Generate From Policy'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+  inputs:
+    userProvideBuildInfo: auto
+    rulesetName: Policy
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P1'), and(eq(variables['TestSuite'], 'P2'), eq(variables['IncludeHigherPriorityTestSuites'], 'true'))))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-roslynanalyzers.RoslynAnalyzers@3
+  displayName: '(P1) Run Roslyn Analyzers: Copy Analysis Logs Only'
+  inputs:
+    copyLogsOnly: true
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P1'), and(eq(variables['TestSuite'], 'P2'), eq(variables['IncludeHigherPriorityTestSuites'], 'true'))))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-roslynanalyzers.RoslynAnalyzers@3
+  displayName: '(P1) Run Roslyn Analyzers: Roslyn SDL Ruleset Version (Latest Pre-Release)'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+  inputs:
+    userProvideBuildInfo: auto
+    rulesetVersion: LatestPreRelease
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P1'), and(eq(variables['TestSuite'], 'P2'), eq(variables['IncludeHigherPriorityTestSuites'], 'true'))))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-roslynanalyzers.RoslynAnalyzers@3
+  displayName: '(P1) Run Roslyn Analyzers: Roslyn SDL Ruleset Version (SDL Required & Recommended 9.4)'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+  inputs:
+    userProvideBuildInfo: auto
+    rulesetVersion: 9.4
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P1'), and(eq(variables['TestSuite'], 'P2'), eq(variables['IncludeHigherPriorityTestSuites'], 'true'))))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-roslynanalyzers.RoslynAnalyzers@3
+  displayName: '(P1) Run Roslyn Analyzers: Roslyn SDL Ruleset Version (SDL Required 9.4)'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+  inputs:
+    userProvideBuildInfo: auto
+    rulesetName: Required
+    rulesetVersion: 9.4
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P1'), and(eq(variables['TestSuite'], 'P2'), eq(variables['IncludeHigherPriorityTestSuites'], 'true'))))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-roslynanalyzers.RoslynAnalyzers@3
+  displayName: '(P1) Run Roslyn Analyzers: Compiler Warnings Suppression File provided'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+  inputs:
+    userProvideBuildInfo: auto
+    suppressionFileForCompilerWarnings: RoslynSuppressionsFile.txt
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P1'), and(eq(variables['TestSuite'], 'P2'), eq(variables['IncludeHigherPriorityTestSuites'], 'true'))))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-roslynanalyzers.RoslynAnalyzers@3
+  displayName: '(P2) Run Roslyn Analyzers: User Provides Build Info (dotnet build for relative path sln)'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+  inputs:
+    msBuildCommandline: 'dotnet.exe build s\TestNetCore.sln'
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-roslynanalyzers.RoslynAnalyzers@3
+  displayName: '(P2) Run Roslyn Analyzers: User Provides Build Info (MSBuild for relative path sln)'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+  inputs:
+    msBuildArchitecture: x86
+    setupCommandline: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsMSBuildCmd.bat"'
+    msBuildCommandline: 'msbuild.exe s\SecureApp.sln'
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-roslynanalyzers.RoslynAnalyzers@3
+  displayName: '(P2) Run Roslyn Analyzers: Custom Ruleset (Expect error)'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+  inputs:
+    userProvideBuildInfo: auto
+    rulesetName: Custom
+    customRuleset: RoslynRuleset.xml
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-roslynanalyzers.RoslynAnalyzers@3
+  displayName: '(P2) Run Roslyn Analyzers: Ruleset Configured In Your Visual Studio Project File(s)'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+  inputs:
+    userProvideBuildInfo: auto
+    rulesetName: None
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-roslynanalyzers.RoslynAnalyzers@3
+  displayName: '(P2) Run Roslyn Analyzers: Roslyn SDL Ruleset Version (SDL Required & Recommended 9.3)'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+  inputs:
+    userProvideBuildInfo: auto
+    rulesetVersion: 9.3
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-roslynanalyzers.RoslynAnalyzers@3
+  displayName: '(P2) Run Roslyn Analyzers: Roslyn SDL Ruleset Version (SDL Required 9.3)'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+  inputs:
+    userProvideBuildInfo: auto
+    rulesetName: Required
+    rulesetVersion: 9.3
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-roslynanalyzers.RoslynAnalyzers@3
+  displayName: '(P2) Run Roslyn Analyzers: Roslyn SDL Ruleset Version (SDL Required & Recommended 9.2)'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+  inputs:
+    userProvideBuildInfo: auto
+    rulesetVersion: 9.2
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-roslynanalyzers.RoslynAnalyzers@3
+  displayName: '(P2) Run Roslyn Analyzers: Roslyn SDL Ruleset Version (SDL Required 9.2)'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+  inputs:
+    userProvideBuildInfo: auto
+    rulesetName: Required
+    rulesetVersion: 9.2
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+#
+# More permutations / variations can be added here
+#

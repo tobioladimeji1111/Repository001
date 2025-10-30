@@ -1,0 +1,176 @@
+parameters:
+- name: IncludeHigherPriorityTestSuites
+  default: $(IncludeHigherPriorityTestSuites)
+- name: Principal
+  default: $(principal)
+- name: TestSuite
+  default: $(TestSuite)
+
+steps:
+- powershell: |
+   # These should have been set by the variables in a pipeline
+   
+   Write-Host "TestSuite = $(TestSuite)"
+   Write-Host "IncludeHigherPriorityTestSuites = $(IncludeHigherPriorityTestSuites)"
+   Write-Host "Principal = $(Principal)"
+   
+  displayName: 'Display Parameter Values'
+
+- powershell: '[System.Environment]::SetEnvironmentVariable(''AzureServicesAuthConnectionString'', $env:principal, [System.EnvironmentVariableTarget]::Machine)'
+  displayName: 'Setup env var for APIScan connection string'
+  continueOnError: true
+  env:
+    principal: $(Principal)
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-apiscan.APIScan@2
+  displayName: '(P0) Run APIScan: Expect to succeed on Azure Hosted agent pool but fail on team''s agent pool'
+  inputs:
+    softwareFolder: '$(Build.SourcesDirectory)\SecureApp\binaries'
+    softwareName: SecureApp
+    softwareVersionNum: 1.0.0
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P0'), eq(variables['IncludeHigherPriorityTestSuites'], 'true')))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-apiscan.APIScan@2
+  displayName: '(P1) Run APIScan: MPD Files (Needs Setup)'
+  enabled: false
+  inputs:
+    targetMode: mpd
+    softwareFolder: '$(Build.SourcesDirectory)\SecureApp\binaries'
+    softwareName: SecureApp
+    softwareVersionNum: 1.0.0
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P1'), and(eq(variables['TestSuite'], 'P2'), eq(variables['IncludeHigherPriorityTestSuites'], 'true'))))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-apiscan.APIScan@2
+  displayName: '(P1) Run APIScan: No copy symbols, binaries, decompress'
+  inputs:
+    softwareFolder: '$(Build.SourcesDirectory)\SecureApp\binaries'
+    softwareName: SecureApp
+    softwareVersionNum: 1.0.0
+    modeType: prerelease
+    noCopySymbols: "true"
+    noCopyBinaries: "true"
+    noDecompress: "true"
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P1'), and(eq(variables['TestSuite'], 'P2'), eq(variables['IncludeHigherPriorityTestSuites'], 'true'))))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-apiscan.APIScan@2
+  displayName: '(P1) Run APIScan: Release Mode (Needs Release Setup)'
+  enabled: false
+  inputs:
+    softwareFolder: '$(Build.SourcesDirectory)\SecureApp\binaries'
+    softwareName: SecureApp
+    softwareVersionNum: 1.0.0
+    modeType: release
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P1'), and(eq(variables['TestSuite'], 'P2'), eq(variables['IncludeHigherPriorityTestSuites'], 'true'))))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-apiscan.APIScan@2
+  displayName: '(P1) Run APIScan: Is Large App'
+  inputs:
+    softwareFolder: '$(Build.SourcesDirectory)\SecureApp\binaries'
+    softwareName: SecureApp
+    softwareVersionNum: 1.0.0
+    isLargeApp: "true"
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P1'), and(eq(variables['TestSuite'], 'P2'), eq(variables['IncludeHigherPriorityTestSuites'], 'true'))))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-apiscan.APIScan@2
+  displayName: '(P1) Run APIScan: Preserve Temp Files'
+  inputs:
+    softwareFolder: '$(Build.SourcesDirectory)\SecureApp\binaries'
+    softwareName: SecureApp
+    softwareVersionNum: 1.0.0
+    preserveTempFiles: "true"
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P1'), and(eq(variables['TestSuite'], 'P2'), eq(variables['IncludeHigherPriorityTestSuites'], 'true'))))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-apiscan.APIScan@2
+  displayName: '(P1) Run APIScan: Latest Pre-Release'
+  inputs:
+    softwareFolder: '$(Build.SourcesDirectory)\SecureApp\binaries'
+    softwareName: SecureApp
+    softwareVersionNum: 1.0.0
+    toolVersion: LatestPreRelease
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P1'), and(eq(variables['TestSuite'], 'P2'), eq(variables['IncludeHigherPriorityTestSuites'], 'true'))))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-apiscan.APIScan@2
+  displayName: '(P2) Run APIScan: Set Analyzer Timeout'
+  inputs:
+    softwareFolder: '$(Build.SourcesDirectory)\SecureApp\binaries'
+    softwareName: SecureApp
+    softwareVersionNum: 1.0.0
+    analyzerTimeout: 10:00:00
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-apiscan.APIScan@2
+  displayName: '(P2) Run APIScan: Provide Email'
+  inputs:
+    softwareFolder: '$(Build.SourcesDirectory)\SecureApp\binaries'
+    softwareName: SecureApp
+    softwareVersionNum: 1.0.0
+    email: secintdev@microsoft.com
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-apiscan.APIScan@2
+  displayName: '(P2) Run APIScan: PreBbt Folder'
+  inputs:
+    softwareFolder: '$(Build.SourcesDirectory)\SecureApp\binaries'
+    softwareName: SecureApp
+    softwareVersionNum: 1.0.0
+    preBbtBinariesFolder: $(Build.SourcesDirectory)\SecureApp\binaries
+    preBbtSymbolsFolder: $(Build.SourcesDirectory)\SecureApp\binaries
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-apiscan.APIScan@2
+  displayName: '(P2) Run APIScan: Minimal Verbosity Level'
+  inputs:
+    softwareFolder: '$(Build.SourcesDirectory)\SecureApp\binaries'
+    softwareName: SecureApp
+    softwareVersionNum: 1.0.0
+    verbosityLevel: minimal
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-apiscan.APIScan@2
+  displayName: '(P2) Run APIScan: Standard Verbosity Level'
+  inputs:
+    softwareFolder: '$(Build.SourcesDirectory)\SecureApp\binaries'
+    softwareName: SecureApp
+    softwareVersionNum: 1.0.0
+    verbosityLevel: none
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-apiscan.APIScan@2
+  displayName: '(P2) Run APIScan: Multiple Nondefaults'
+  inputs:
+    softwareFolder: '$(Build.SourcesDirectory)\SecureApp\binaries'
+    softwareName: SecureApp
+    softwareVersionNum: 1.0.0
+    noCopySymbols: "true"
+    noCopyBinaries: "true"
+    noDecompress: "false"
+    email: secintdev@microsoft.com
+    preBbtBinariesFolder: $(Build.SourcesDirectory)\SecureApp\binaries
+    preBbtSymbolsFolder: $(Build.SourcesDirectory)\SecureApp\binaries
+    isLargeApp: "true"
+    analyzerTimeout: 10:00:00
+    preserveTempFiles: "true"
+    verbosityLevel: minimal
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+#
+# More permutations / variations can be added here
+#
+
+- powershell: '[System.Environment]::SetEnvironmentVariable(''AzureServicesAuthConnectionString'', $null, [System.EnvironmentVariableTarget]::Machine)'
+  displayName: 'Cleanup env var for APIScan connection string'
+  continueOnError: true
+  condition: always()

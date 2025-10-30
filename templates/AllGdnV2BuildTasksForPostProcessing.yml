@@ -1,0 +1,34 @@
+parameters:
+- name: IncludeHigherPriorityTestSuites
+  default: $(IncludeHigherPriorityTestSuites)
+- name: TestSuite
+  default: $(TestSuite)
+
+steps:
+- powershell: |
+   # These should have been set by the variables in a pipeline
+   
+   Write-Host "TestSuite = $(TestSuite)"
+   Write-Host "IncludeHigherPriorityTestSuites = $(IncludeHigherPriorityTestSuites)"
+   
+  displayName: 'Display Parameter Values'
+
+- template: /templates/GdnV2TSAUploadBuildTaskPermutations.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    TestSuite: $(TestSuite)
+
+- template: /templates/GdnV2CreateSecurityAnalysisReportBuildTaskPermutations.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    TestSuite: $(TestSuite)
+
+- template: /templates/GdnV2PublishSecurityAnalysisLogsBuildTaskPermutations.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    TestSuite: $(TestSuite)
+
+- template: /templates/GdnV2PostAnalysisBuildTaskPermutations.yml
+  parameters:
+    IncludeHigherPriorityTestSuites: $(IncludeHigherPriorityTestSuites)
+    TestSuite: $(TestSuite)

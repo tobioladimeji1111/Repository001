@@ -1,0 +1,42 @@
+parameters:
+- name: IncludeHigherPriorityTestSuites
+  default: $(IncludeHigherPriorityTestSuites)
+- name: TestSuite
+  default: $(TestSuite)
+
+steps:
+- powershell: |
+   # These should have been set by the variables in a pipeline
+   
+   Write-Host "TestSuite = $(TestSuite)"
+   Write-Host "IncludeHigherPriorityTestSuites = $(IncludeHigherPriorityTestSuites)"
+   
+  displayName: 'Display Parameter Values'
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-report.SdtReport@2
+  displayName: '(P0) Create Security Analysis Report: All Tools'
+  inputs:
+    GdnExportPolicyMinSev: Error
+    GdnExportGdnToolApiScanSeverity: Error
+    GdnExportGdnToolArmorySeverity: Error
+    GdnExportGdnToolBanditSeverity: Error
+    GdnExportGdnToolBinSkimSeverity: Error
+    GdnExportGdnToolCodesignValidationSeverity: Error
+    GdnExportGdnToolCredScanSeverity: Error
+    GdnExportGdnToolESLintSeverity: Error
+    GdnExportGdnToolFlawfinderSeverity: Error
+    GdnExportGdnToolFortifyScaSeverity: Error
+    GdnExportGdnToolFxCopSeverity: Error
+    GdnExportGdnToolModernCopSeverity: Error
+    GdnExportGdnToolPoliCheckSeverity: Error
+    GdnExportGdnToolRoslynAnalyzersSeverity: Error
+    GdnExportGdnToolSDLNativeRulesSeverity: Error
+    GdnExportGdnToolSemmleSeverity: Error
+    GdnExportGdnToolSpotBugsSeverity: Error
+    GdnExportGdnToolTSLintSeverity: Error
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P0'), eq(variables['IncludeHigherPriorityTestSuites'], 'true')))
+
+#
+# More permutations / variations to be added here
+#

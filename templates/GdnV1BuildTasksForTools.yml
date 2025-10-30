@@ -1,0 +1,47 @@
+parameters:
+- name: IncludeHigherPriorityTestSuites
+  default: $(IncludeHigherPriorityTestSuites)
+- name: TestSuite
+  default: $(TestSuite)
+
+steps:
+- powershell: |
+   # These should have been set by the variables in a pipeline
+   
+   Write-Host "TestSuite = $(TestSuite)"
+   Write-Host "IncludeHigherPriorityTestSuites = $(IncludeHigherPriorityTestSuites)"
+   
+  displayName: 'Display Parameter Values'
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-policheck.PoliCheck@1
+  displayName: '(P0) Run PoliCheck: xml Output Format'
+  inputs:
+    targetType: F
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P0'), eq(variables['IncludeHigherPriorityTestSuites'], 'true')))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-policheck.PoliCheck@1
+  displayName: '(P1) Run PoliCheck: SARIF Output Format'
+  inputs:
+    targetType: F
+    result: PoliCheck.sarif
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P1'), and(eq(variables['TestSuite'], 'P2'), eq(variables['IncludeHigherPriorityTestSuites'], 'true'))))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-prefast.SDLNativeRules@2
+  displayName: '(P0) Run the PREfast SDL Native Rules for MSBuild'
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P0'), eq(variables['IncludeHigherPriorityTestSuites'], 'true')))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-semmle.Semmle@0
+  displayName: '(P0) Run Semmle (csharp)'
+  inputs:
+    cleanupBuildCommands: |
+     "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsMSBuildCmd.bat" && msbuild SecureApp.sln /t:Clean
+     
+    buildCommands: |
+     "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsMSBuildCmd.bat" && msbuild SecureApp.sln
+     "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsMSBuildCmd.bat" && msbuild $(BUILD.SourcesDirectory)\SecureApp.sln
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P0'), eq(variables['IncludeHigherPriorityTestSuites'], 'true')))
+  

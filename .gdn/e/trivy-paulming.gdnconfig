@@ -1,0 +1,27 @@
+{
+ "fileVersion": "1.0.1",
+ "tools": [
+  {
+   "fileVersion": "1.0.1",
+   "tool": {
+    "name": "Trivy",
+    "version": "0.15.0.1"
+   },
+   "arguments": {
+    "Action": "image",
+    "Target": "$(IMAGE_TO_SCAN)",
+    "ExitCode": 100,
+    "TableFormat": "json",
+    "OutputPath": "$(TRIVY_LOG_FILE)"
+   },
+   "outputExtension": "json",
+   "successfulExitCodes": [
+    0,
+    100
+   ],
+   "errorExitCodes": {
+    "1": "The tool did not complete successfully due to bad parameters or a scan error. Contact TrivySecSupport for assistance."
+   }
+  }
+ ]
+}

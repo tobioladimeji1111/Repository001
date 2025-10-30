@@ -1,0 +1,56 @@
+parameters:
+- name: IncludeHigherPriorityTestSuites
+  default: $(IncludeHigherPriorityTestSuites)
+- name: TestSuite
+  default: $(TestSuite)
+
+steps:
+- powershell: |
+   # These should have been set by the variables in a pipeline
+   
+   Write-Host "TestSuite = $(TestSuite)"
+   Write-Host "IncludeHigherPriorityTestSuites = $(IncludeHigherPriorityTestSuites)"
+   
+  displayName: 'Display Parameter Values'
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-prefast.SDLNativeRules@3
+  displayName: '(P0) Run the PREfast SDL Native Rules for MSBuild'
+  inputs:
+    msBuildCommandline: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsMSBuildCmd.bat" && msbuild $(BUILD.SourcesDirectory)\NativeApp\Sample-SDL-Native-VS-Project-VS2019\Sample-SDL-Native-VS-Project-VS2019.vcxproj /t:clean#"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsMSBuildCmd.bat" && msbuild $(BUILD.SourcesDirectory)\NativeApp\Sample-SDL-Native-VS-Project-VS2019\Sample-SDL-Native-VS-Project-VS2019.vcxproj'
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P0'), eq(variables['IncludeHigherPriorityTestSuites'], 'true')))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-prefast.SDLNativeRules@3
+  displayName: '(P1) Run PREfast: SDL Required Ruleset'
+  inputs:
+    msBuildCommandline: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsMSBuildCmd.bat" && msbuild $(BUILD.SourcesDirectory)\NativeApp\Sample-SDL-Native-VS-Project-VS2019\Sample-SDL-Native-VS-Project-VS2019.vcxproj /t:clean#"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsMSBuildCmd.bat" && msbuild $(BUILD.SourcesDirectory)\NativeApp\Sample-SDL-Native-VS-Project-VS2019\Sample-SDL-Native-VS-Project-VS2019.vcxproj'
+    rulesetName: Required
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P1'), and(eq(variables['TestSuite'], 'P2'), eq(variables['IncludeHigherPriorityTestSuites'], 'true'))))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-prefast.SDLNativeRules@3
+  displayName: '(P2) Run PREfast: Publish PREfast Xml Result Files'
+  inputs:
+    publishXML: true
+    msBuildCommandline: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsMSBuildCmd.bat" && msbuild $(BUILD.SourcesDirectory)\NativeApp\Sample-SDL-Native-VS-Project-VS2019\Sample-SDL-Native-VS-Project-VS2019.vcxproj /t:clean#"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsMSBuildCmd.bat" && msbuild $(BUILD.SourcesDirectory)\NativeApp\Sample-SDL-Native-VS-Project-VS2019\Sample-SDL-Native-VS-Project-VS2019.vcxproj'
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-prefast.SDLNativeRules@3
+  displayName: '(P2) Run PREfast: Copy Analysis Logs Only'
+  inputs:
+    copyLogsOnly: true
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-prefast.SDLNativeRules@3
+  displayName: '(P2) Run PREfast: Latest PreRelease'
+  inputs:
+    msBuildCommandline: '"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsMSBuildCmd.bat" && msbuild $(BUILD.SourcesDirectory)\NativeApp\Sample-SDL-Native-VS-Project-VS2019\Sample-SDL-Native-VS-Project-VS2019.vcxproj /t:clean#"C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsMSBuildCmd.bat" && msbuild $(BUILD.SourcesDirectory)\NativeApp\Sample-SDL-Native-VS-Project-VS2019\Sample-SDL-Native-VS-Project-VS2019.vcxproj'
+    toolVersion: LatestPreRelease
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+#
+# More permutations / variations can be added here
+#

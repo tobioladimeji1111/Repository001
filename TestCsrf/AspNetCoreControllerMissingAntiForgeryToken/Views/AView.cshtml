@@ -1,0 +1,6 @@
+<form action="something" method="post">
+  <input type="text" name="bitcoins">
+  <input type="text" name="receiver">
+  <%= Html.AntiForgeryToken() %>
+  <button type="submit">Transfer</button>
+</form>

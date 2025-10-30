@@ -1,0 +1,19 @@
+{
+    "instanceUrl": "https://msazure.visualstudio.com",
+    "template": "TFSMSAzure",
+    "projectName": "One",
+    "areaPath": "One\\Security\\Security Integration",
+    "iterationPath": "",
+    "ppe": false,
+    "notificationAliases": [
+        "rikumar@microsoft.com",
+        "jianj@microsoft.com",
+        "dmivanov@microsoft.com"
+    ],
+    "codebaseAdmins": [
+        "redmond\\secintsa",
+        "redmond\\jianj",
+        "redmond\\rikumar"
+    ],
+    "repositoryName": "SecureApp"
+}

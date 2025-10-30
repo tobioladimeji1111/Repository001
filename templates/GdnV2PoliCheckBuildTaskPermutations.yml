@@ -1,0 +1,76 @@
+parameters:
+- name: IncludeHigherPriorityTestSuites
+  default: $(IncludeHigherPriorityTestSuites)
+- name: TestSuite
+  default: $(TestSuite)
+
+steps:
+- powershell: |
+   # These should have been set by the variables in a pipeline
+   
+   Write-Host "TestSuite = $(TestSuite)"
+   Write-Host "IncludeHigherPriorityTestSuites = $(IncludeHigherPriorityTestSuites)"
+   
+  displayName: 'Display Parameter Values'
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-policheck.PoliCheck@2
+  displayName: '(P0) Run PoliCheck： All Defaults'
+  inputs:
+    targetType: F
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P0'), eq(variables['IncludeHigherPriorityTestSuites'], 'true')))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-policheck.PoliCheck@2
+  displayName: '(P0) Run PoliCheck： Output SARIF'
+  inputs:
+    targetType: F
+    result: PoliCheck.sarif
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P0'), eq(variables['IncludeHigherPriorityTestSuites'], 'true')))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-policheck.PoliCheck@2
+  displayName: '(P1) Run PoliCheck： Output tsv'
+  inputs:
+    targetType: F
+    result: PoliCheck.tsv
+    optionsFC: 0
+    optionsXS: 0
+    optionsHMENABLE: 0
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P1'), and(eq(variables['TestSuite'], 'P2'), eq(variables['IncludeHigherPriorityTestSuites'], 'true'))))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-policheck.PoliCheck@2
+  displayName: '(P1) Run PoliCheck： Scan List of Folders/Files'
+  inputs:
+    targetType: FL
+    targetListFileArgument: $(Build.SourcesDirectory)\PoliCheckScanList.txt
+    result: PoliCheck.xml
+    optionsFC: 0
+    optionsXS: 0
+    optionsHMENABLE: 0
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P1'), and(eq(variables['TestSuite'], 'P2'), eq(variables['IncludeHigherPriorityTestSuites'], 'true'))))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-policheck.PoliCheck@2
+  displayName: '(P2) Run PoliCheck： Latest PreRelease'
+  inputs:
+    targetType: F
+    result: PoliCheck.xml
+    optionsFC: 0
+    optionsXS: 0
+    optionsHMENABLE: 0
+    toolVersion: LatestPreRelease
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-policheck.PoliCheck@2
+  displayName: '(P2) Run PoliCheck： Non English Language'
+  inputs:
+    targetType: F
+    termTypeT: 0033a1036
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+#
+# More permutations / variations can be added here
+#

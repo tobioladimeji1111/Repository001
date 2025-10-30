@@ -1,0 +1,27 @@
+{
+ "fileVersion": "1.0.0",
+ "tools": [
+  {
+   "fileVersion": "1.0.0",
+   "tool": {
+    "name": "CodeSign",
+    "version": "1.10.8"
+   },
+   "arguments": {
+    "enabledPlugins": "/plugins:CodeSignValidation:enabled=true",
+    "targetFilesType": "GLOB",
+    "targetDirectory": "$(WorkingDirectory)",
+    "excludePassesFromLog": false
+   },
+   "outputExtension": "sarif",
+   "successfulExitCodes": [
+    0,
+    1
+   ],
+   "errorExitCodes": {
+    "255": "An unexpected exception occurred",
+    "254": "No available target files were found and the tool was set to fail under this condition"
+   }
+  }
+ ]
+}

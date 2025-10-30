@@ -1,0 +1,27 @@
+{
+    "codebaseName": "SecureApp_main",
+    "ppe": false,
+    "notificationAliases": [
+        "SecIntDev@microsoft.com"
+    ],
+    "codebaseAdmins": [
+        "REDMOND\\rikumar",
+        "REDMOND\\jianj",
+    ],
+    "instanceUrl": "https://msazure.visualstudio.com/defaultcollection/",
+    "projectName": "One",
+    "areaPath": "One\\Security\\Security Integration",
+    "iterationPath": "One\\Azure Core Security",
+    "tools": [
+        "Armory",
+        "Bandit",
+        "BinSkim",
+        "Codesign",
+        "CredScan",
+        "FlawFinder",
+        "Policheck",
+        "RoslynAnalyzers"
+    ],
+    "repositoryName": "SecureApp",
+    "branchName": "main"
+}

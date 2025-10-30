@@ -1,0 +1,68 @@
+parameters:
+- name: IncludeHigherPriorityTestSuites
+  default: $(IncludeHigherPriorityTestSuites)
+- name: TestSuite
+  default: $(TestSuite)
+
+steps:
+- powershell: |
+   # These should have been set by the variables in a pipeline
+   
+   Write-Host "TestSuite = $(TestSuite)"
+   Write-Host "IncludeHigherPriorityTestSuites = $(IncludeHigherPriorityTestSuites)"
+   
+  displayName: 'Display Parameter Values'
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-binskim.BinSkim@4
+  displayName: '(P0) Run BinSkim: Basic Type'
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P0'), eq(variables['IncludeHigherPriorityTestSuites'], 'true')))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-binskim.BinSkim@4
+  displayName: '(P0) Run BinSkim: Basic Type (Binskim Target Pattern)'
+  inputs:
+    TargetPattern: binskimPattern
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P0'), eq(variables['IncludeHigherPriorityTestSuites'], 'true')))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-binskim.BinSkim@4
+  displayName: '(P1) Run BinSkim: 3.9.0-prerelease2'
+  inputs:
+    TargetPattern: binskimPattern
+    AnalyzeTargetBinskim: '$(Build.SourcesDirectory)\SecureApp\binaries\vulnprocess.exe'
+    toolVersion: '3.9.0-prerelease2'
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P1'), and(eq(variables['TestSuite'], 'P2'), eq(variables['IncludeHigherPriorityTestSuites'], 'true'))))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-binskim.BinSkim@4
+  displayName: '(P1) Run BinSkim: Enable Verbose, Hashes, Statistics, and Environment'
+  inputs:
+    AnalyzeVerbose: true
+    AnalyzeHashes: true
+    AnalyzeStatistics: true
+    AnalyzeEnvironment: true
+  continueOnError: true
+  condition: and(succeeded(), or(eq(variables['TestSuite'], 'P1'), and(eq(variables['TestSuite'], 'P2'), eq(variables['IncludeHigherPriorityTestSuites'], 'true'))))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-binskim.BinSkim@4
+  displayName: '(P2) Run BinSkim: Latest Pre-Release'
+  inputs:
+    TargetPattern: binskimPattern
+    AnalyzeRecurse: true
+    AnalyzeHashes: true
+    AnalyzeStatistics: true
+    toolVersion: LatestPreRelease
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-binskim.BinSkim@4
+  displayName: '(P2) Run BinSkim: Command Line Type'
+  inputs:
+    InputType: CommandLine
+    arguments: 'analyze $(Build.ArtifactStagingDirectory)\**.dll --sarif-output-version OneZeroZero --output $(Build.ArtifactStagingDirectory)\BinSkimOutput.sarif'
+  continueOnError: true
+  condition: and(succeeded(), eq(variables['TestSuite'], 'P2'))
+
+#
+# More permutations / variations to be added here
+#
