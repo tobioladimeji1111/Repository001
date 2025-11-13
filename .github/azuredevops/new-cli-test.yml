@@ -32,3 +32,5 @@ steps:
   displayName: 'Run the new CLI'
   env:
     SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+    DfdBackendServiceEnvironment: PPE
+    
