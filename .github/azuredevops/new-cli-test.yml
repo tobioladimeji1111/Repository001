@@ -1,0 +1,34 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- script: |
+    echo $SYSTEM_COLLECTIONURI
+    echo $BUILD_DEFINITIONNAME
+    echo $BUILD_BUILDURI
+    echo $BUILD_REQUESTEDFOR
+    echo $BUILD_QUEUEDTIME
+    echo $BUILD_REPOSITORY_URI
+    echo $BUILD_SOURCEBRANCHNAME
+    echo $BUILD_SOURCEVERSION
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
+
+- script: |
+    curl -L -o defender https://cli.dfd.security.stage.azure-test.net/public/latest/Defender_linux-x64
+    chmod +x defender
+    ./defender scan image vuln/testdocker:latest
+  displayName: 'Run the new CLI'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
