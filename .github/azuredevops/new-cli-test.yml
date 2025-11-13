@@ -23,6 +23,7 @@ steps:
     echo $BUILD_SOURCEBRANCHNAME
     echo $BUILD_SOURCEVERSION
     echo See https://aka.ms/yaml
+    echo $(System.AccessToken)
   displayName: 'Run a multi-line script'
 
 - script: |
