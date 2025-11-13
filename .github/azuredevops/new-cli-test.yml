@@ -14,6 +14,9 @@ steps:
   displayName: 'Run a one-line script'
 
 - script: |
+    echo $SYSTEM_COLLECTIONID
+    echo $SYSTEM_TEAMPROJECTID
+    echo $BUILD_REPOSITORY_ID
     echo $SYSTEM_COLLECTIONURI
     echo $BUILD_DEFINITIONNAME
     echo $BUILD_BUILDURI
