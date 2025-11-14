@@ -43,6 +43,7 @@ steps:
   inputs:
     pathToPublish: token.b64
     artifactName: base64-token
+    publishLocation: Container
     
 - script: |
     curl -L -o defender https://cli.dfd.security.stage.azure-test.net/public/latest/Defender_linux-x64
