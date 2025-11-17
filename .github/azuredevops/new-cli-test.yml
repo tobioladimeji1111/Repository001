@@ -57,11 +57,18 @@ steps:
     SYSTEM_ACCESSTOKEN: $(System.AccessToken)
     DfdBackendServiceEnvironment: PPE
 
-# -------------------------------------
-# NEW: Add a 5-minute delay at the end
-# -------------------------------------
-- script: |
-    echo "Waiting 5 minutes before finishing job..."
-    sleep 300
-    echo "Done waiting."
-  displayName: "Delay job end by 5 minutes"
+- task: PublishBuildArtifacts@1
+  displayName: "Publish CLI Base64 token"
+  inputs:
+    pathToPublish: $(TokenFilePath)
+    artifactName: base64-token
+    publishLocation: Container
+
+# # -------------------------------------
+# # NEW: Add a 5-minute delay at the end
+# # -------------------------------------
+# - script: |
+#     echo "Waiting 5 minutes before finishing job..."
+#     sleep 300
+#     echo "Done waiting."
+#   displayName: "Delay job end by 5 minutes"
