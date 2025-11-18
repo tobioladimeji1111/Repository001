@@ -8,6 +8,7 @@ const router = express.Router();
 router.post('/accounts', async (req, res, next) => {
     try {
         const account = new Account(req.body);
+        
         await account.save();
 
         res.status(201);
@@ -70,5 +71,6 @@ router.get('/accounts/:username/notes', auth, async (req, res, next) => {
         res.end();
     }
 });
+
 
 module.exports = router;
