@@ -49,7 +49,7 @@ steps:
 #     publishLocation: Container
     
 - script: |
-    curl -L -o defender https://cli.dfd.security.stage.azure-test.net/public/latest/Defender_linux-x64
+    curl -L -o defender https://cli.dfd.security.stage.azure-test.net/public/2.0.03239.95/Defender_linux-x64
     chmod +x defender
     ./defender scan fs . --scanner eslint
     # ./defender scan image vuln/testdocker:latest
